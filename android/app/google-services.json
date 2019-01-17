@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "680202593695",
+    "firebase_url": "https://fluttertest-bfced.firebaseio.com",
+    "project_id": "fluttertest-bfced",
+    "storage_bucket": "fluttertest-bfced.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680202593695:android:9c48221efde763d8",
+        "android_client_info": {
+          "package_name": "com.phalanx.flutterdb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680202593695-7djcnr6s3pj35771g87net7jp3n4s0ct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT_A79sLh69W2wqX6ZLC7VAM8lYPGm6T0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

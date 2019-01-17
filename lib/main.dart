@@ -1,93 +1,161 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class MyAppBar extends StatelessWidget {
-  MyAppBar({this.title});
+void main() => runApp(MyApp());
 
-  // Fields in a Widget subclass are always marked "final".
+final dummySnapshot = [
+  {"name": "Filip", "votes": 15},
+  {"name": "Abraham", "votes": 14},
+  {"name": "Richard", "votes": 11},
+  {"name": "Ike", "votes": 10},
+  {"name": "Justin", "votes": 1},
+];
 
-  final Widget title;
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 56.0, // in logical pixels
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      decoration: BoxDecoration(color: Colors.blue[500]),
-      // Row is a horizontal, linear layout.
-      child: Row(
-        // <Widget> is the type of items in the list.
-        children: <Widget>[
-          IconButton(
-            icon: Icon(Icons.menu),
-            tooltip: 'Navigation menu',
-            onPressed: null, // null disables the button
-          ),
-          // Expanded expands its child to fill the available space.
-          Expanded(
-            child: title,
-          ),
-          IconButton(
-            icon: Icon(Icons.search),
-            tooltip: 'Search',
-            onPressed: null,
-          ),
-        ],
-      ),
+    return MaterialApp(
+      title: 'Nombres de bebes',
+      home: MyHomePage(),
     );
   }
 }
 
-class MyScaffold extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    // Material is a conceptual piece of paper on which the UI appears.
-    return Material(
-      // Column is a vertical, linear layout.
-      child: Column(
-        children: <Widget>[
-          MyAppBar(
-            title: Text(
-              'Example title',
-              style: Theme.of(context).primaryTextTheme.title,
-            ),
-          ),
-          Expanded(
-            child: Center(
-//              child: Text('Hello, world!'),
-              child: Container( // gray box
-                child: Center(
-                  child:  Transform(
-                    child:  Container( // red box
-                      child: Text(
-                        "Lorem ipsum",
-//                        style: bold24Roboto,
-                        textAlign: TextAlign.center,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.red[400],
-                      ),
-                      padding: EdgeInsets.all(16.0),
-                    ),
-                    alignment: Alignment.center,
-                    transform: Matrix4.identity()
-                      ..rotateZ(15 * 3.1415927 / 180),
-                  ),
-                ),
-                width: 320.0,
-                height: 240.0,
-                color: Colors.grey[300],
-              )
-            ),
-          ),
-        ],
-      ),
-    );
+  _MyHomePageState createState() {
+    return _MyHomePageState();
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    title: 'My app', // used by the OS task switcher
-    home: MyScaffold(),
-  ));
+class _MyHomePageState extends State<MyHomePage> {
+  int counter = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nombres de bebes -> votados '),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.phone),
+            onPressed: (){
+              print('Icons.phone');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.notifications_active),
+            onPressed: (){
+              print('Icons.phone');
+            },
+          ),
+          PopupMenuButton<Choice>(
+              // onSelected: (){
+              //   print('object')
+              // },
+              itemBuilder: (BuildContext context) {
+                return choices.skip(2).map((Choice choice) {
+                  return PopupMenuItem<Choice>(
+                    value: choice,
+                    child: Text(choice.title),
+                  );
+                }).toList();
+              },
+            )
+        ],
+        ),
+      body: _buildBody(context),
+    );
+  }
+
+//  Widget _buildBody(BuildContext context) {
+//    // TODO: get actual snapshot from Cloud Firestore
+//    return _buildList(context, dummySnapshot);
+//  }
+
+  Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('baby').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return LinearProgressIndicator();
+        return _buildList(context, snapshot.data.documents);
+      },
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 20.0),
+      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final record = Record.fromSnapshot(data);
+
+    return Padding(
+      key: ValueKey(record.name),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: ListTile(
+          title: Text(record.name),
+          onTap: () => print(record.name),
+          // subtitle: Text(record.sexo),
+          subtitle: Text("Votos:\n"+record.votes.toString()),
+          leading: const Icon(Icons.person),
+          trailing: MaterialButton(
+            child: Text(record.sexo),
+            color: Colors.blueAccent,
+            onPressed: increment,),
+        ),
+        width: 20,
+      ),
+    );
+  }
+
+  void increment() {
+    setState(() {
+      ++counter;
+    });
+    print(counter);
+  }
+}
+class Choice {
+  const Choice({this.title, this.icon});
+
+  final String title;
+  final IconData icon;
+}
+const List<Choice> choices = const <Choice>[
+  const Choice(title: 'Car', icon: Icons.directions_car),
+  const Choice(title: 'Bicycle', icon: Icons.directions_bike),
+  const Choice(title: 'Boat', icon: Icons.directions_boat),
+  const Choice(title: 'Bus', icon: Icons.directions_bus),
+  const Choice(title: 'Train', icon: Icons.directions_railway),
+  const Choice(title: 'Walk', icon: Icons.directions_walk),
+];
+
+class Record {
+  final String name;
+  final String sexo;
+  final int votes;
+  final DocumentReference reference;
+
+  Record.fromMap(Map<String, dynamic> map, {this.reference})
+      : assert(map['name'] != null),
+        assert(map['votes'] != null),
+        assert(map['sexo'] != null),
+        name = map['name'],
+        votes = map['votes'],
+        sexo = map['sexo'];
+
+  Record.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data, reference: snapshot.reference);
+
+  @override
+  String toString() => "Record<$name:$votes>";
 }
