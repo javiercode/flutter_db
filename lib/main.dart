@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'pages/detalle.dart';
 import 'pages/acerca.dart';
+import 'dart:io';
+
 
 void main() => runApp(MyApp());
 
@@ -77,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
               accountName: new Text('Javier'),
               accountEmail: new Text('xaviercode@mail.com'),
               currentAccountPicture: new CircleAvatar(
-                backgroundImage: new NetworkImage('http://i.pravatar.cc/300'),
+//                backgroundImage: new AssetImage("assets/images/developer.jepg"),
               ),
             ),
             new ListTile(
