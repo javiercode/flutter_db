@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'pages/detalle.dart';
+import 'pages/acerca.dart';
 
 void main() => runApp(MyApp());
 
@@ -40,7 +42,10 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: Icon(Icons.phone),
             onPressed: (){
-              print('Icons.phone');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DetalleRoute()),
+              );
             },
           ),
           IconButton(
@@ -65,6 +70,29 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         ),
       body: _buildBody(context),
+      drawer: new Drawer(
+        child: ListView(
+          children: <Widget>[
+            new UserAccountsDrawerHeader(
+              accountName: new Text('Javier'),
+              accountEmail: new Text('xaviercode@mail.com'),
+              currentAccountPicture: new CircleAvatar(
+                backgroundImage: new NetworkImage('http://i.pravatar.cc/300'),
+              ),
+            ),
+            new ListTile(
+              title: new Text('Acerca de'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) => new AboutPage()));
+              }
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -95,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Padding(
       key: ValueKey(record.name),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
