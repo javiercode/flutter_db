@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'detalle.dart';
 import 'acerca.dart';
+import 'grid_list.dart';
 import 'home.dart';
+import 'qr_page.dart';
+import 'servicio_rest.dart';
 import '../model/record.dart';
 
 class MyMainPage extends StatefulWidget {
@@ -74,7 +77,37 @@ class MenuPage extends State<MyMainPage> {
                       new MaterialPageRoute(
                           builder: (BuildContext context) => new AboutPage()));
                 }
-            )
+            ),
+            new ListTile(
+                title: new Text('Listado'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (BuildContext context) => new GridListPage()));
+                }
+            ),
+            new ListTile(
+                title: new Text('Rest'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (BuildContext context) => new ServicioRestPage()));
+                }
+            ),
+            new ListTile(
+                title: new Text('QR'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (BuildContext context) => new QrPage()));
+                }
+            ),
           ],
         ),
       ),
