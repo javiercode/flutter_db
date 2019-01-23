@@ -27,7 +27,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   shrine_images: ^1.0.0
-
+  
   qrcode_reader: ^0.4.4
   qr_flutter: ^1.1.1
 

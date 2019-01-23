@@ -19,33 +19,25 @@ class MyMainPage extends StatefulWidget {
 class MenuPage extends State<MyMainPage> {
   int counter = 0;
   var assetsImage = new AssetImage('images/developer.jpeg');
-  HomePage homePage = new HomePage();
+  //HomePage homePage = new HomePage();
+  DetalleRoute detallePage = new DetalleRoute();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nombres de Bebes:'),
+        title: Text('Manejo de Flutter:'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.phone),
+            icon: Icon(Icons.camera_alt),
             onPressed: (){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DetalleRoute()),
+                MaterialPageRoute(builder: (context) => QrPage()),
               );
             },
           ),
-          IconButton(
-            icon: Icon(Icons.notifications_active),
-            onPressed: (){
-              print('Icons.phone');
-            },
-          ),
           PopupMenuButton<Choice>(
-//             onSelected: (){
-//               print('object');
-//             },
             itemBuilder: (BuildContext context) {
               return choices.skip(2).map((Choice choice) {
                 return PopupMenuItem<Choice>(
@@ -57,26 +49,16 @@ class MenuPage extends State<MyMainPage> {
           )
         ],
       ),
-      body: homePage.buildBody(context),
+      body: detallePage.build(context),
       drawer: new Drawer(
         child: ListView(
           children: <Widget>[
             new UserAccountsDrawerHeader(
               accountName: new Text('Javier'),
-              accountEmail: new Text('xaviercode@mail.com'),
+              accountEmail: new Text('javier.elvis.code@gmail.com'),
               currentAccountPicture: new CircleAvatar(
                 backgroundImage: AssetImage('assets/images/developer.jpeg'),
               ),
-            ),
-            new ListTile(
-                title: new Text('Acerca de'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (BuildContext context) => new AboutPage()));
-                }
             ),
             new ListTile(
                 title: new Text('Listado'),
@@ -106,6 +88,26 @@ class MenuPage extends State<MyMainPage> {
                       context,
                       new MaterialPageRoute(
                           builder: (BuildContext context) => new QrPage()));
+                }
+            ),
+            new ListTile(
+                title: new Text('Ejemplo Firebase'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (BuildContext context) => new HomePage()));
+                }
+            ),
+            new ListTile(
+                title: new Text('Acerca de'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (BuildContext context) => new AboutPage()));
                 }
             ),
           ],

@@ -11,7 +11,7 @@ class _GridListState extends State<GridListPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('About Page'),
+        title: new Text('Scroll Bar'),
       ),
       body: Container(
         margin: EdgeInsets.symmetric(vertical: 20.0),

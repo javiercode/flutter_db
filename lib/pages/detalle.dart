@@ -10,9 +10,6 @@ class DetalleRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Second Route"),
-      ),
       body: ListView(
           children: <Widget>[
             Container(

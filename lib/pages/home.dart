@@ -5,11 +5,66 @@ import 'detalle.dart';
 import 'acerca.dart';
 import '../model/record.dart';
 
+class HomePage extends StatefulWidget {
+  @override
+  _HomePage createState() => new _HomePage();
+}
 
 
-class HomePage {
+class _HomePage extends State<HomePage>{
   int counter = 0;
   var assetsImage = new AssetImage('images/developer.jpeg');
+
+  Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('Fire Base'),
+      ),
+      body: buildBody(context),
+      floatingActionButton: new FloatingActionButton(
+        onPressed:(){
+          showDialog(
+            context: context,
+            builder: (_) => new AlertDialog(
+                title: new Text("Dialog Title"),
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: RaisedButton(
+                        onPressed: () {
+                          // Validate will return true if the form is valid, or false if
+                          // the form is invalid.
+                          if (_formKey.currentState.validate()) {
+                            // If the form is valid, we want to show a Snackbar
+                            Scaffold.of(context)
+                                .showSnackBar(SnackBar(content: Text('Processing Data')));
+                          }
+                        },
+                        child: Text('Submit'),
+                      ),
+                    ),
+                  ],
+                ),
+            )
+          );
+        },
+        tooltip: '',
+        child: new Icon(Icons.add_box),
+      ),
+//      body: null,
+    );
+  }
 
   @override
   Widget buildBody(BuildContext context) {
@@ -31,7 +86,6 @@ class HomePage {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final record = Record.fromSnapshot(data);
-
     return Padding(
       key: ValueKey(record.name),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -41,15 +95,21 @@ class HomePage {
           borderRadius: BorderRadius.circular(5.0),
         ),
         child: ListTile(
-          title: Text(record.name),
-          onTap: () => print(record.name),
+          title: Text(record.name+"\nSexo:"+record.sexo),
+          onTap: () => print(record.sexo),
           // subtitle: Text(record.sexo),
           subtitle: Text("Votos:\n"+record.votes.toString()),
           leading: const Icon(Icons.person),
           trailing: MaterialButton(
-            child: Text(record.sexo),
+            child: new Icon(Icons.plus_one),
             color: Colors.blueAccent,
-            onPressed: increment,),
+            //onPressed: ()=> record.reference.updateData({'votes': record.votes + 1}),
+            onPressed: ()=> Firestore.instance.runTransaction((transaction) async {
+              final freshSnapshot = await transaction.get(record.reference);
+              final fresh = Record.fromSnapshot(freshSnapshot);
+              await transaction.update(record.reference, {'votes': fresh.votes + 1});
+            }) 
+          ),
         ),
         width: 20,
       ),
